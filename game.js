@@ -3,7 +3,6 @@ let img;
 
 var bullets = [];
 var disks = [];
-var factdisks = [];
 
 let health = 1; 
 let bullethits=0; 
@@ -33,7 +32,7 @@ function setup() {
 function generatefactdisks(num,x_coord, y_coord) {
     for (var i = 0; i < math.factorial(num); i++ ) {
         test = new factorials(0,128,0,x_coord, y_coord,20,20,1,0.04*i+1);
-        factdisks.push(test);
+        disks.push(test);
     }
 }
 
@@ -70,7 +69,6 @@ function keyReleased() {
 }
 
 function draw() { 
-
     image(img, 0,0);
 
     text("health: " +  health, 70, 60);
@@ -80,18 +78,15 @@ function draw() {
         test.drawShape();
         test.calcCoords();
         test.displayNum();
-    }
-
-
-    for (var i = 0; i < factdisks.length; i++) {
-        test = factdisks[i];
-        test.drawShape();
-        test.calcCoords();
-        test.displayNum();
+        if (test.y > windowHeight) {
+            health-=test.numVal; 
+            disks.splice(i, 1);
+        }
     }
 
     testdef.drawShape();
 
+    //draws and calculates coordinates of every bullet 
     for (var i = 0; i < bullets.length; i++) {
         bullets[i].calcCoords();
         bullets[i].drawShape();
@@ -104,38 +99,23 @@ function draw() {
         for (var f = 0; f < bullets.length; f++) { 
             bullet = bullets[f];
             if (abs(bullet.x - test.x) <= 100 * 1/2  && abs(bullet.y - test.y) <= 100 * 1/2) {
-
                 // gets rid of hit disks
                 disks.splice(i, 1);
                 // gets rid of hit bullets
                 bullets.splice(f,1);
                 bullethits++;
-                health+=3;
+                health+=test.numVal;
 
-                generatefactdisks(test.numVal, test.x, test.y);
-                console.log(factdisks.length);
+                // the shapeLength of a subdisk is 20, if the disk is length 20, it is a regular disk
+                if (test.shapeLength>20) {
+                    generatefactdisks(test.numVal, test.x, test.y);
+                }
             }
         }
     }
-    
-    //loops through every regular disk in the array 
-    for (var i = 0; i < factdisks.length; i++) {
-        test = factdisks[i];
-        // loops through the bullets fired and their location 
-        for (var f = 0; f < bullets.length; f++) { 
-            bullet = bullets[f];
-            if (abs(bullet.x - test.x) <= test.shapeWidth * 1/2 && abs(bullet.y - test.y) <= test.shapeLength * 1/2) {
-                factdisks.splice(i, 1);
-                health+=3;
-            }
-        }
-    }
-    
 
 
 }
-
-
 
 
 class factorials {
@@ -179,7 +159,9 @@ class factorials {
 
         for (var i = 0; i < disks.length; i++) {
             test = disks[i];
-            text(test.numVal +  "!", test.x, test.y);
+            if (test.shapeLength>20)  {
+                text(test.numVal +  "!", test.x, test.y);
+            }
         }
 
     }
