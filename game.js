@@ -80,7 +80,7 @@ function draw() {
         test.calcCoords();
         test.displayNum();
         if (test.y > windowHeight) {
-            health-=test.numVal+test.numVal*2; 
+            health-=test.numVal; 
             disks.splice(i, 1);
         }
     }
@@ -106,10 +106,15 @@ function draw() {
                 bullets.splice(f,1);
                 bullethits++;
                 health+=test.numVal;
-                generatefactdisks(test.numVal, test.x, test.y);
+
+                // the shapeLength of a subdisk is 20, if the disk is length 20, it is a regular disk
+                if (test.shapeLength>20) {
+                    generatefactdisks(test.numVal, test.x, test.y);
+                }
             }
         }
     }
+
 
 }
 
