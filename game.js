@@ -69,7 +69,6 @@ function keyReleased() {
 }
 
 function draw() { 
-    console.log(disks.length);
     image(img, 0,0);
 
     text("health: " +  health, 70, 60);
