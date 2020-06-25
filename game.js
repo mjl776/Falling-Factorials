@@ -7,6 +7,7 @@ var disks = [];
 let health = 1; 
 let bullethits=0; 
 let bulletmisses=0;
+let level = 1; 
 
 let gameOver= false; 
 
@@ -19,9 +20,10 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     img = loadImage('img/game.png'); // Load the image
 
+
     test = new factorials(0,255,255,300,2,100,100,3,0);
     test2 = new factorials(0,255,255,500,2,100,100,4,0);
-    test3 = new factorials(0,255,255,700,2,100,100,5,0);
+    test3 = new factorials(0,255,255,700,2,100,100,4,0);
     disks.push(test);
     disks.push(test2);
     disks.push(test3);
@@ -35,24 +37,20 @@ function setup() {
 // generate new factorial sub-disks
 function generatesubdisks(num,x_coord, y_coord) {
     for (var i = 0; i < math.factorial(num); i++ ) {
-        sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*20),20,20,1,0.02*i+1);
+        sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1,0.02*i+1);
         disks.push(sub);
     }
 }
 
+//generates regular disks
 function generatefactdisks(num) {
     for (var i = 1; i < num+1; i++ ) {
-        reg = new factorials(0, 255, 255, i*100,2,100,100, Math.floor((Math.random()*6)),0);
+        reg = new factorials(0, 255, 255, i*(100+ Math.random()*40),2,100,100, Math.floor((Math.random()*6)),i*.04);
         disks.push(reg);
     }
 }
 
-
-
-
-
 // controls in the game
-
 function keyPressed() {
 
     if (keyCode === 39) {
@@ -73,8 +71,7 @@ function keyPressed() {
 
 }
 
-// key released function for when the 
-
+// key released function for when a specific key is released
 function keyReleased() {
 
     if (keyCode === RIGHT_ARROW || keyCode === LEFT_ARROW) {
@@ -89,6 +86,7 @@ function draw() {
     image(img, 0,0);
 
     text("health: " +  health, 70, 60);
+    text("level: " +  level, 70, 90);
 
     for (var i = 0; i < disks.length; i++) {
         test = disks[i];
@@ -137,7 +135,17 @@ function draw() {
 
     if (disks.length==0 && gameOver==false) {
         bullets.length=0;
-        generatefactdisks(3);
+
+        if (level %2 ==0) {
+
+            generatefactdisks(3);
+        }
+        if (level %2 !=0) {
+
+            generatefactdisks(4);
+        }
+
+        level+=1;
     }
 
     if (health < 0) {
