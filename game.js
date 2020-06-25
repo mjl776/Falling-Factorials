@@ -6,6 +6,9 @@ var disks = [];
 
 let health = 1; 
 let bullethits=0; 
+let bulletmisses=0;
+
+let gameOver= false; 
 
 function preload() {
     soundFormats('mp3', 'ogg');
@@ -29,23 +32,35 @@ function setup() {
     //bg_song.play();
 }
 
-function generatefactdisks(num,x_coord, y_coord) {
+// generate new factorial sub-disks
+function generatesubdisks(num,x_coord, y_coord) {
     for (var i = 0; i < math.factorial(num); i++ ) {
-        test = new factorials(0,128,0,x_coord, y_coord,20,20,1,0.04*i+1);
-        disks.push(test);
+        sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*20),20,20,1,0.02*i+1);
+        disks.push(sub);
     }
 }
+
+function generatefactdisks(num) {
+    for (var i = 1; i < num+1; i++ ) {
+        reg = new factorials(0, 255, 255, i*100,2,100,100, Math.floor((Math.random()*6)),0);
+        disks.push(reg);
+    }
+}
+
+
+
+
 
 // controls in the game
 
 function keyPressed() {
 
     if (keyCode === 39) {
-        testdef.xChange=5;
+        testdef.xChange=10;
     }  
 
     if (keyCode === 37) {
-        testdef.xChange=-5;
+        testdef.xChange=-10;
     }  
 
     if (keyCode === 32) {
@@ -61,9 +76,11 @@ function keyPressed() {
 // key released function for when the 
 
 function keyReleased() {
+
     if (keyCode === RIGHT_ARROW || keyCode === LEFT_ARROW) {
         testdef.xChange=0;
     }
+
     return false; // prevent any default behaviour on browser 
 
 }
@@ -101,6 +118,7 @@ function draw() {
             if (abs(bullet.x - test.x) <= 100 * 1/2  && abs(bullet.y - test.y) <= 100 * 1/2) {
                 // gets rid of hit disks
                 disks.splice(i, 1);
+
                 // gets rid of hit bullets
                 bullets.splice(f,1);
                 bullethits++;
@@ -108,10 +126,29 @@ function draw() {
 
                 // the shapeLength of a subdisk is 20, if the disk is length 20, it is a regular disk
                 if (test.shapeLength>20) {
-                    generatefactdisks(test.numVal, test.x, test.y);
+                    generatesubdisks(test.numVal, test.x, test.y);
                 }
             }
+            else if (bullet.y  < 0){
+                bullets.splice(f,1); 
+            }
         }
+    }
+
+    if (disks.length==0 && gameOver==false) {
+        bullets.length=0;
+        generatefactdisks(3);
+    }
+
+    if (health < 0) {
+        gameOver=true; 
+    }
+
+    if (gameOver==true) {
+        // clears array as the game is over
+        disks.length=0;
+
+        text("thanks for playing", windowWidth/2, windowHeight/2);
     }
 
 
@@ -133,7 +170,7 @@ class factorials {
     }
 
     calcCoords() {
-        this.y += 0.8;
+        this.y += 0.3;
         this.x +=this.xSpeed;
         if (this.x<0) {
             this.xSpeed= this.xSpeed*-1;
