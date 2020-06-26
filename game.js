@@ -37,7 +37,8 @@ function setup() {
 // generate new factorial sub-disks
 function generatesubdisks(num,x_coord, y_coord) {
     for (var i = 0; i < math.factorial(num); i++ ) {
-        sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1,0.02*i+1);
+        // subdisk speed is based on the level and also interation in while loop
+        sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1+level );
         disks.push(sub);
     }
 }
@@ -129,6 +130,7 @@ function draw() {
             }
             else if (bullet.y  < 0){
                 bullets.splice(f,1); 
+                bulletmisses++;
             }
         }
     }
@@ -138,11 +140,11 @@ function draw() {
 
         if (level %2 ==0) {
 
-            generatefactdisks(3);
+            generatefactdisks(level +1);
         }
         if (level %2 !=0) {
 
-            generatefactdisks(4);
+            generatefactdisks(level+2);
         }
 
         level+=1;
@@ -251,10 +253,8 @@ class laser {
     }
 
     calcCoords() {
+        // speed of bullet 
         this.y -= 10;
-        if (this.y < -1) {
-            this.y=-30;
-        }
     }
 
     drawShape() {
