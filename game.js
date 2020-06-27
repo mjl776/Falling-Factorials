@@ -36,11 +36,25 @@ function setup() {
 
 // generate new factorial sub-disks
 function generatesubdisks(num,x_coord, y_coord) {
-    for (var i = 0; i < math.factorial(num); i++ ) {
-        // subdisk speed is based on the level and also interation in while loop
-        sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1+level );
-        disks.push(sub);
+    // if the number inputed is less than 2, go through each iteration and create a disk
+    if (num <= 2) {
+        for (var i = 0; i < math.factorial(num); i++ ) {
+            // subdisk speed is based on the level and also interation in while loop
+            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1+level );
+            disks.push(sub);
+        }
     }
+    // if the number inputed is greater than 2, go through each iteration and create multiple disks
+    else  {
+        for (var i = 0; i < math.factorial(num)/2; i++ ) {
+            // subdisk speed is based on the level and also interation in while loop
+            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1+level);
+            sub2 = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.03*i+1+level);
+            disks.push(sub);
+            disks.push(sub2);
+        }
+    }
+
 }
 
 //generates regular disks
@@ -136,27 +150,23 @@ function draw() {
     }
 
     if (disks.length==0 && gameOver==false) {
+        // sets bullet length to 0 so it does not hit any of the new generated disks
         bullets.length=0;
+        
+        // generates factorials disks based on what the current level is 
+        generatefactdisks(math.factorial(level-1));
 
-        if (level %2 ==0) {
-
-            generatefactdisks(level +1);
-        }
-        if (level %2 !=0) {
-
-            generatefactdisks(level+2);
-        }
-
+        // increases level 
         level+=1;
     }
 
     if (health < 0) {
-        gameOver=true; 
+        gameOver = true; 
     }
 
-    if (gameOver==true) {
+    if (gameOver == true) {
         // clears array as the game is over
-        disks.length=0;
+        disks.length = 0;
 
         text("thanks for playing", windowWidth/2, windowHeight/2);
     }
