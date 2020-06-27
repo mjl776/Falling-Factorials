@@ -44,7 +44,8 @@ function generatesubdisks(num,x_coord, y_coord) {
             disks.push(sub);
         }
     }
-    // if the number inputed is greater than 2, go through each iteration and create multiple disks
+    // if the number inputed is greater than 2, go through each iteration and create 2 disks with the max iteration being
+    // the factorial outcome divided by 2 
     else  {
         for (var i = 0; i < math.factorial(num)/2; i++ ) {
             // subdisk speed is based on the level and also interation in while loop
@@ -78,7 +79,7 @@ function keyPressed() {
 
     if (keyCode === 32) {
         //laser created when spacebar is pressed and stored in a array 
-        bullet = new laser(0,225, 225,testdef.x+100, windowHeight+30);
+        bullet = new laser(0,225, 225,tesfitdef.x+100, windowHeight+30);
         bullets.push(bullet);
     }
 
