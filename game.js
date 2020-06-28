@@ -79,7 +79,7 @@ function keyPressed() {
 
     if (keyCode === 32) {
         //laser created when spacebar is pressed and stored in a array 
-        bullet = new laser(0,225, 225,tesfitdef.x+100, windowHeight+30);
+        bullet = new laser(0,225, 225, testdef.x+100, windowHeight+30);
         bullets.push(bullet);
     }
 
