@@ -152,7 +152,7 @@ function draw() {
 
     if (disks.length==0 && gameOver==false) {
         // sets bullet length to 0 so it does not hit any of the new generated disks
-        bullets.length=0;
+        bullets.length = 0;
         
         // generates factorials disks based on what the current level is 
         generatefactdisks(math.factorial(level-1));
