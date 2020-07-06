@@ -40,7 +40,7 @@ function generatesubdisks(num,x_coord, y_coord) {
     if (num <= 2) {
         for (var i = 0; i < math.factorial(num); i++ ) {
             // subdisk speed is based on the level and also interation in while loop
-            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1+level );
+            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1);
             disks.push(sub);
         }
     }
@@ -48,9 +48,9 @@ function generatesubdisks(num,x_coord, y_coord) {
     // the factorial outcome divided by 2 
     else  {
         for (var i = 0; i < math.factorial(num)/2; i++ ) {
-            // subdisk speed is based on the level and also interation in while loop
-            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1+level);
-            sub2 = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.03*i+1+level);
+            // subdisk speed is randomized for numbers between 1 and 9 (or 10 with the + 1)
+            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1,(Math.random()*5)+6);
+            sub2 = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, (Math.random()*5)+6);
             disks.push(sub);
             disks.push(sub2);
         }
@@ -79,7 +79,7 @@ function keyPressed() {
 
     if (keyCode === 32) {
         //laser created when spacebar is pressed and stored in a array 
-        bullet = new laser(0,225, 225, testdef.x+100, windowHeight+30);
+        bullet = new laser(0,225, 225, testdef.x+100, windowHeight-70);
         bullets.push(bullet);
     }
 
@@ -155,7 +155,7 @@ function draw() {
         bullets.length = 0;
         
         // generates factorials disks based on what the current level is 
-        generatefactdisks(math.factorial(level-1));
+        generatefactdisks(level+3);
 
         // increases level 
         level+=1;
@@ -192,12 +192,12 @@ class factorials {
 
     calcCoords() {
         this.y += 0.3;
-        this.x +=this.xSpeed;
+        this.x += this.xSpeed;
         if (this.x<0) {
-            this.xSpeed= this.xSpeed*-1;
+            this.xSpeed = this.xSpeed*-1;
         }
         if (this.x>windowWidth) {
-            this.xSpeed= this.xSpeed*-1;
+            this.xSpeed = this.xSpeed*-1;
         }
     }
 
@@ -242,6 +242,7 @@ class defender {
         fill(this.r, this.g, this.b);
         // draws shape with x,y coords 
         triangle(this.x, this.y+7, (this.x+200+this.x)/2, this.y-100, this.x+200, this.y+7);
+
         this.x += this.xChange;
         if (this.x > windowWidth-200) {
             this.xChange = 0;
