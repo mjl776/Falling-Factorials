@@ -74,12 +74,12 @@ function keyPressed() {
     }  
 
     if (keyCode === 37) {
-        testdef.xChange=-10;
+        testdef.xChange = -10;
     }  
 
     if (keyCode === 32) {
         //laser created when spacebar is pressed and stored in a array 
-        bullet = new laser(0,225, 225, testdef.x+100, windowHeight-70);
+        bullet = new laser(0, 225, 225, testdef.x + 100, windowHeight - 70);
         bullets.push(bullet);
     }
 
@@ -110,7 +110,7 @@ function draw() {
         test.calcCoords();
         test.displayNum();
         if (test.y > windowHeight) {
-            health-=test.numVal; 
+            health -= test.numVal; 
             disks.splice(i, 1);
         }
     }
