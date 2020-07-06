@@ -5,11 +5,11 @@ var bullets = [];
 var disks = [];
 
 let health = 1; 
-let bullethits=0; 
-let bulletmisses=0;
+let bullethits = 0; 
+let bulletmisses = 0;
 let level = 1; 
 
-let gameOver= false; 
+let gameOver = false; 
 
 function preload() {
     soundFormats('mp3', 'ogg');
@@ -21,14 +21,14 @@ function setup() {
     img = loadImage('img/game.png'); // Load the image
 
 
-    test = new factorials(0,255,255,300,2,100,100,3,0);
-    test2 = new factorials(0,255,255,500,2,100,100,4,0);
-    test3 = new factorials(0,255,255,700,2,100,100,4,0);
+    test = new factorials(0, 255, 255, 300, 2, 100, 100, 3, 0);
+    test2 = new factorials(0, 255, 255, 500, 2, 100, 100, 4, 0);
+    test3 = new factorials(0, 255, 255, 700, 2, 100, 100, 4, 0);
     disks.push(test);
     disks.push(test2);
     disks.push(test3);
 
-    testdef = new defender(0,255,255,200,windowHeight,0);
+    testdef = new defender(0, 255, 255, 200, windowHeight, 0);
     img.resize(windowWidth, windowHeight); // resizing image to game window
     
     //bg_song.play();
@@ -40,17 +40,17 @@ function generatesubdisks(num,x_coord, y_coord) {
     if (num <= 2) {
         for (var i = 0; i < math.factorial(num); i++ ) {
             // subdisk speed is based on the level and also interation in while loop
-            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, 0.02*i+1);
+            sub = new factorials(0, 128, 0, x_coord, y_coord + (Math.random() * 30), 20, 20, 1, (Math.random() * 5) + 6);
             disks.push(sub);
         }
     }
     // if the number inputed is greater than 2, go through each iteration and create 2 disks with the max iteration being
     // the factorial outcome divided by 2 
     else  {
-        for (var i = 0; i < math.factorial(num)/2; i++ ) {
-            // subdisk speed is randomized for numbers between 1 and 9 (or 10 with the + 1)
-            sub = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1,(Math.random()*5)+6);
-            sub2 = new factorials(0,128,0,x_coord, y_coord + (Math.random()*30),20,20,1, (Math.random()*5)+6);
+        for (var i = 0; i < math.factorial(num) / 2; i++) {
+            // subdisk speed is randomized for numbers between 1 and 5 (the plus 6 ensures the disk speed is at least 6)
+            sub = new factorials(0, 128, 0, x_coord, y_coord + (Math.random() * 30),20,20,1,(Math.random() * 5) + 6);
+            sub2 = new factorials(0, 128, 0, x_coord, y_coord + (Math.random() * 30),20,20,1, (Math.random() * 5) + 6);
             disks.push(sub);
             disks.push(sub2);
         }
@@ -60,8 +60,8 @@ function generatesubdisks(num,x_coord, y_coord) {
 
 //generates regular disks
 function generatefactdisks(num) {
-    for (var i = 1; i < num+1; i++ ) {
-        reg = new factorials(0, 255, 255, i*(100+ Math.random()*40),2,100,100, Math.floor((Math.random()*6)),i*.04);
+    for (var i = 1; i < num + 1; i++) {
+        reg = new factorials(0, 255, 255, i * (100 + Math.random() * 40),2,100,100, Math.floor((Math.random() * 6)),i * .04);
         disks.push(reg);
     }
 }
@@ -91,7 +91,7 @@ function keyPressed() {
 function keyReleased() {
 
     if (keyCode === RIGHT_ARROW || keyCode === LEFT_ARROW) {
-        testdef.xChange=0;
+        testdef.xChange = 0;
     }
 
     return false; // prevent any default behaviour on browser 
@@ -134,31 +134,32 @@ function draw() {
                 disks.splice(i, 1);
 
                 // gets rid of hit bullets
-                bullets.splice(f,1);
+                bullets.splice(f, 1);
                 bullethits++;
-                health+=test.numVal;
+                health += test.numVal;
 
                 // the shapeLength of a subdisk is 20, if the disk is length 20, it is a regular disk
-                if (test.shapeLength>20) {
+                if (test.shapeLength > 20) {
                     generatesubdisks(test.numVal, test.x, test.y);
                 }
             }
-            else if (bullet.y  < 0){
-                bullets.splice(f,1); 
+            else if (bullet.y < 0){
+                bullets.splice(f, 1); 
                 bulletmisses++;
             }
         }
     }
 
-    if (disks.length==0 && gameOver==false) {
+    if (disks.length == 0 && gameOver == false) {
         // sets bullet length to 0 so it does not hit any of the new generated disks
         bullets.length = 0;
         
         // generates factorials disks based on what the current level is 
-        generatefactdisks(level+3);
+        // plus 2 is to account for the initial disks in the game
+        generatefactdisks(level + 2);
 
         // increases level 
-        level+=1;
+        level += 1;
     }
 
     if (health < 0) {
@@ -175,7 +176,6 @@ function draw() {
 
 }
 
-
 class factorials {
 
     constructor(r,g,b,x,y, shapeWidth, shapeLength, numVal, xSpeed) {
@@ -184,20 +184,22 @@ class factorials {
         this.b = b; 
         this.x = x;
         this.y = y; 
-        this.shapeWidth=shapeWidth;
-        this.shapeLength=shapeLength;
-        this.numVal=numVal;
-        this.xSpeed=xSpeed;
+        this.shapeWidth = shapeWidth;
+        this.shapeLength = shapeLength;
+        this.numVal = numVal;
+        this.xSpeed = xSpeed;
     }
 
     calcCoords() {
         this.y += 0.3;
         this.x += this.xSpeed;
-        if (this.x<0) {
-            this.xSpeed = this.xSpeed*-1;
+
+        if (this.x < 0) {
+            this.xSpeed = this.xSpeed * -1;
         }
-        if (this.x>windowWidth) {
-            this.xSpeed = this.xSpeed*-1;
+
+        if (this.x > windowWidth) {
+            this.xSpeed = this.xSpeed * -1;
         }
     }
 
@@ -217,7 +219,7 @@ class factorials {
 
         for (var i = 0; i < disks.length; i++) {
             test = disks[i];
-            if (test.shapeLength>20)  {
+            if (test.shapeLength > 20)  {
                 text(test.numVal +  "!", test.x, test.y);
             }
         }
@@ -228,7 +230,7 @@ class factorials {
 
 class defender {
 
-    constructor(r,g,b, x,y, xChange) {
+    constructor(r, g, b, x, y, xChange) {
         this.r = r;
         this.g = g; 
         this.b = b; 
@@ -241,7 +243,7 @@ class defender {
         // fills color 
         fill(this.r, this.g, this.b);
         // draws shape with x,y coords 
-        triangle(this.x, this.y+7, (this.x+200+this.x)/2, this.y-100, this.x+200, this.y+7);
+        triangle(this.x, this.y + 7, (this.x + 200 + this.x) / 2, this.y - 100, this.x + 200, this.y + 7);
 
         this.x += this.xChange;
         if (this.x > windowWidth-200) {
@@ -256,7 +258,7 @@ class defender {
 
 class laser {
 
-    constructor(r,g,b, x,y) {
+    constructor(r, g, b, x, y) {
         this.r = r;
         this.g = g; 
         this.b = b; 
