@@ -7,7 +7,8 @@ var disks = [];
 let health = 1; 
 let bullethits = 0; 
 let bulletmisses = 0;
-let level = 1; 
+let level = 1;
+let bullet_len = 0;
 
 let gameOver = false; 
 
@@ -20,13 +21,18 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     img = loadImage('img/game.png'); // Load the image
 
+    //generates 3 random factorial disks with values between 0 and 5 
+    d1 = new factorials(0, 255, 255, 300, 2, 100, 100, Math.floor((Math.random() * 6)), 0);
+    d2 = new factorials(0, 255, 255, 500, 2, 100, 100, Math.floor((Math.random() * 6)), 0);
+    d3 = new factorials(0, 255, 255, 700, 2, 100, 100, Math.floor((Math.random() * 6)), 0);
 
-    test = new factorials(0, 255, 255, 300, 2, 100, 100, 3, 0);
-    test2 = new factorials(0, 255, 255, 500, 2, 100, 100, 4, 0);
-    test3 = new factorials(0, 255, 255, 700, 2, 100, 100, 4, 0);
-    disks.push(test);
-    disks.push(test2);
-    disks.push(test3);
+    bullet_len += math.factorial(d1.numVal);
+    bullet_len += math.factorial(d2.numVal);
+    bullet_len += math.factorial(d3.numVal);
+
+    disks.push(d1);
+    disks.push(d2);
+    disks.push(d3);
 
     testdef = new defender(0, 255, 255, 200, windowHeight, 0);
     img.resize(windowWidth, windowHeight); // resizing image to game window
@@ -44,6 +50,7 @@ function generatesubdisks(num,x_coord, y_coord) {
             disks.push(sub);
         }
     }
+
     // if the number inputed is greater than 2, go through each iteration and create 2 disks with the max iteration being
     // the factorial outcome divided by 2 
     else  {
@@ -62,6 +69,10 @@ function generatesubdisks(num,x_coord, y_coord) {
 function generatefactdisks(num) {
     for (var i = 1; i < num + 1; i++) {
         reg = new factorials(0, 255, 255, i * (100 + Math.random() * 40),2,100,100, Math.floor((Math.random() * 6)),i * .04);
+
+        // the value of how many bullets are availible depends on the value of the factorial disks
+        bullet_len += math.factorial(reg.numVal);
+
         disks.push(reg);
     }
 }
@@ -79,8 +90,11 @@ function keyPressed() {
 
     if (keyCode === 32) {
         //laser created when spacebar is pressed and stored in a array 
-        bullet = new laser(0, 225, 225, testdef.x + 100, windowHeight - 70);
-        bullets.push(bullet);
+        if (bullet_len>0) {
+            bullet = new laser(0, 225, 225, testdef.x + 100, windowHeight - 70);
+            bullets.push(bullet);
+            bullet_len--;
+        }
     }
 
     return false; // prevent any default behaviour on browser 
@@ -103,7 +117,9 @@ function draw() {
 
     text("health: " +  health, 70, 60);
     text("level: " +  level, 70, 90);
+    text("bullets left: " + bullet_len, 120, 120);
 
+    // draws all the disks on the screen
     for (var i = 0; i < disks.length; i++) {
         test = disks[i];
         test.drawShape();
@@ -115,6 +131,7 @@ function draw() {
         }
     }
 
+    // draws defender 
     testdef.drawShape();
 
     //draws and calculates coordinates of every bullet 
@@ -129,6 +146,7 @@ function draw() {
         // loops through the bullets fired and their location 
         for (var f = 0; f < bullets.length; f++) { 
             bullet = bullets[f];
+
             if (abs(bullet.x - test.x) <= 100 * 1/2  && abs(bullet.y - test.y) <= 100 * 1/2) {
                 // gets rid of hit disks
                 disks.splice(i, 1);
